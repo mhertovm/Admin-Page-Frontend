@@ -10,8 +10,38 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  async function handleSubmitRegister(e){
+    e.preventDefault();
+      try {
+        await fetch("http://localhost:3001/register", {
+          method: "POST",
+          body: JSON.stringify({
+            name,
+            email,
+            password
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
+            navigate('/login');
+      } catch (err) {
+        console.log(err);
+      }
+      setEmail('');
+      setPassword('');
+  }
+
   return (
     <Container component="main" maxWidth="xs">
     <CssBaseline />
@@ -29,10 +59,10 @@ function Register() {
       <Typography component="h1" variant="h5">
         Sign up
       </Typography>
-<Box component="form" noValidate sx={{ mt: 3 }}>
+<Box component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmitRegister}>
         <Grid container spacing={2}>
         <Grid item xs={12}>
-            <TextField
+            <TextField onChange={(e)=> setName(e.target.value)}
               required
               fullWidth
               id="esername"
@@ -41,7 +71,7 @@ function Register() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextField onChange={(e)=> setEmail(e.target.value)}
               required
               fullWidth
               id="email"
@@ -51,7 +81,7 @@ function Register() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <TextField onChange={(e)=> setPassword(e.target.value)}
               required
               fullWidth
               name="password"

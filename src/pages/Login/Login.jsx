@@ -35,7 +35,7 @@ function Login() {
             const data = await response.json();
             localStorage.setItem("token", data.jwt)
             if(data.role === 0){
-                navigate('/admin');
+                navigate('/productcrud');
             } else if(data.role === 1){
                 navigate('/user')
             }
