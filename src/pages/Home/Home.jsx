@@ -26,8 +26,6 @@ function Home() {
             <TableCell>img</TableCell>
             <TableCell align="right">name</TableCell>
             <TableCell align="right">price</TableCell>
-            <TableCell align="right">quantity</TableCell>
-
           </TableRow>
         </TableHead>
         <TableBody>
@@ -41,7 +39,6 @@ function Home() {
               </TableCell>
               <TableCell align="right">{row.name}</TableCell>
               <TableCell align="right">{row.price}</TableCell>
-              <TableCell align="right">{row.quantity}</TableCell>
             </TableRow>
           ))}
         </TableBody>

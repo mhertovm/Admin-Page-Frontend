@@ -8,26 +8,38 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import Link from '@mui/material/Link';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useState, useEffect } from 'react';
 
 const pages = ['Products', 'Pricing', 'Blog'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const token = localStorage.getItem("token");
+
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [state, setState]=useState(false)
+useEffect(()=>{
+  setState(true)
+},[token])
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-
+  function handleCloseUserMenu() {
+    
+    localStorage.removeItem("token")
+  };
 
   return (
     <AppBar position="static">
@@ -119,19 +131,53 @@ function Header() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-              <Button 
-                href="/login"
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Login
-              </Button>
-          </Box>
+          {token===null ? 
+            <MenuItem >
+              <Typography
+              component="a"
+              href="/login"
+              sx={{
+                textDecoration: 'none',
+              }}
+              >Login</Typography>
+            </MenuItem> :
+            <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <AccountCircleIcon/>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+    
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography component="a"
+                  href="/"
+                  sx={{
+                    textDecoration: 'none',
+                  }} textAlign="center">Logout</Typography>
+                </MenuItem>
+     
+            </Menu>
+          </Box>}
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
-
 export default Header;
 

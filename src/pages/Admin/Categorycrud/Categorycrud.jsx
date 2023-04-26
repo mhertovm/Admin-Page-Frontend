@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 
 import * as React from 'react';
 import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
+import TextField from '@mui/material/TextField';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import Button from "@mui/material/Button";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -18,24 +16,45 @@ function Categorycrud() {
   const [data, setdata]=useState([]);
   const [state, setState]=useState(false)
   const [name, setName]=useState('')
-  const [price, setPrice]=useState('')
-  const [img, setImg]=useState('')
-  const [quantity, setquantity]=useState('')
-  const [categoryId, setCategoryId]=useState('')
-
+ 
+  const token = localStorage.getItem("token");
   useEffect(()=>{
-    fetch("http://localhost:3001/product")
+    fetch("http://localhost:3001/category", {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "Authorization": token
+      },
+    })
     .then(res=> res.json())
     .then(res=>setdata(res))
   },[state])
-  async function deleteProduct(id){
-console.log(id)
-const token = localStorage.getItem("token");
+
+async function deleteCategory(id){
+    try {
+      await fetch("http://localhost:3001/deleteCategory", {
+        method: "DELETE",
+        body: JSON.stringify({
+          id,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": token
+        },
+      });
+      setState(!state)
+    } catch (err) {
+      console.log(err);
+    }
+  }
+async function updateCategory(id){
+    const token = localStorage.getItem("token");
       try {
-        await fetch("http://localhost:3001/deleteProduct", {
-          method: "DELETE",
+        await fetch("http://localhost:3001/updatecategory", {
+          method: "PUT",
           body: JSON.stringify({
             id,
+            name,
           }),
           headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -46,102 +65,105 @@ const token = localStorage.getItem("token");
       } catch (err) {
         console.log(err);
       }
-}
-async function updateProduct(id){
-    console.log(id)
-    const token = localStorage.getItem("token");
-          try {
-            await fetch("http://localhost:3001/updateProduct", {
-              method: "PUT",
-              body: JSON.stringify({
-                id,
-                name,
-                price,
-                img,
-                quantity,
-                categoryId
-              }),
-              headers: {
-                "Content-type": "application/json; charset=UTF-8",
-                "Authorization": token
-              },
-            });
-            setState(!state)
-          } catch (err) {
-            console.log(err);
-          }
     }
 
-  return (
+async function addCategory(){
+
+  try {
+    await fetch("http://localhost:3001/addCategory", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "Authorization": token
+      },
+    });
+    setState(!state)
+  } catch (err) {
+    console.log(err);
+  }
+ }
+
+return (
 <div>
-<TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">img</TableCell>
-            <TableCell align="right">name</TableCell>
-            <TableCell align="right">price</TableCell>
-            <TableCell align="right">quantity</TableCell>
-            <TableCell align="right">category</TableCell>
-            <TableCell align="right">CRUD</TableCell>
-          </TableRow>
-        </TableHead>
-        </Table>
 
-    
-{data.map((row) => (
-    <Accordion key={row.id}>
-    <AccordionSummary
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-    >
-        <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+  <Table padding='checkbox' sx={{ minWidth: 650 }} aria-label="simple table">
+  <TableRow>
+    <TableCell align="center">id</TableCell>
+    <TableCell align="center">name</TableCell>
+    <TableCell align="center">CRUD</TableCell>
+  </TableRow>
+  </Table>
 
-        <TableBody>
-            <TableRow>
-                <TableCell align="right">{row.img}</TableCell>
-                <TableCell align="right">{row.name}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
-                <TableCell align="right">{row.quantity}</TableCell>
-                <TableCell align="right">{row.Category?.name}</TableCell>
-                <TableCell align="right">
-                    <Button variant="outlined" onClick={()=>deleteProduct(row.id)}>
-                        Delite
-                    </Button>
-                </TableCell>
-            </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-    </AccordionSummary>
-    <AccordionDetails>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableBody>
-            <TableRow
-    
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <TableCell align="right"><Input onChange={(e)=> setImg(e.target.value)}/></TableCell>
-                <TableCell align="right"><Input onChange={(e)=> setName(e.target.value)}/></TableCell>
-                <TableCell align="right"><Input onChange={(e)=> setPrice(e.target.value)}/></TableCell>
-                <TableCell align="right"><Input onChange={(e)=> setquantity(e.target.value)}/></TableCell>
-                <TableCell align="right"><Input onChange={(e)=> setCategoryId(e.target.value)}/></TableCell>
-                <TableCell align="right">
-                    <Button variant="outlined" onClick={()=>updateProduct(row.id)}>
-                        Update
-                    </Button>
-                </TableCell>
-            </TableRow>
-        </TableBody>
-      </Table>
-    </AccordionDetails>
-    </Accordion>
-    ))}
+  <Table padding='checkbox' sx={{ minWidth: 650 }} aria-label="simple table">
+  <TableRow>
+    <TableCell>
+      <div>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            Add Category
+          </AccordionSummary>
+          <AccordionDetails>
         
-</TableContainer>
+          <Table padding='checkbox'>
+      <TableRow>
+        <TableCell align="center">Category name<Input onChange={(e)=> setName(e.target.value)}></Input></TableCell>
+        <TableCell align="right">
+            <Button variant="outlined" onClick={addCategory}>
+                Add
+            </Button>
+        </TableCell>
+      </TableRow>
+      </Table>.
+          
+          </AccordionDetails>
+        </Accordion>
+      </div>
+    </TableCell>
+  </TableRow>
+  </Table>
+
+
+  {data.map((row) => (
+    <Accordion key={row.id}>
+      <AccordionSummary
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+      >
+        <Table padding='checkbox' aria-label="simple table">
+        <TableRow className='tablepadding'>
+        <TableCell align="center">{row.id}</TableCell>
+          <TableCell align="center">{row.name}</TableCell>
+          <TableCell align="right">
+            <Button variant="outlined" onClick={()=>deleteCategory(row.id)}>
+                Delite
+            </Button>
+          </TableCell>
+        </TableRow>
+        </Table>
+      </AccordionSummary>
+      <AccordionDetails>
+      <Table padding='checkbox'>
+      <TableRow>
+        <TableCell align="center"><TextField id="outlined-basic"  variant="outlined" label="Category name" defaultValue={row.name} onChange={(e)=> setName(e.target.value)}/></TableCell>
+        <TableCell align="right">
+            <Button variant="outlined" onClick={()=>updateCategory(row.id)}>
+                Update
+            </Button>
+        </TableCell>
+      </TableRow>
+      </Table>
+      </AccordionDetails>
+    </Accordion>
+  ))}    
 </div>
-  );
+);
 }
 
 

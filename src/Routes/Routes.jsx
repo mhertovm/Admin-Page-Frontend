@@ -5,8 +5,9 @@ import Layout from "../Layouts/Layout"
 import Admin from "../pages/Admin/Admin"
 import User from "../pages/User/User"
 import Home from "../pages/Home/Home"
-import Productcrud from "../pages/Admin/Productcrud/Productcrud"
-import Categorycrud from "../pages/Admin/Categorycrud/Categorycrud"
+import Productcrud from "../pages/Admin/Productcrud/Productcrud";
+import Categorycrud from "../pages/Admin/Categorycrud/Categorycrud";
+
 
 function AppRoutes() {
   return (
@@ -16,7 +17,7 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/user" element={<User />} />
         <Route path="/" element={<Home />} />
-        <Route  element={<Admin />}>
+        <Route element={<Admin />}>
           <Route path="/productcrud" element={<Productcrud />}/>
           <Route path="/categorycrud" element={<Categorycrud />}/>
         </Route>

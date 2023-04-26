@@ -14,9 +14,9 @@ import { useNavigate } from "react-router-dom";
 
 
 function Login() {
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState("")
     const navigate = useNavigate();
 
     async function handleSubmitLogin(e){
@@ -38,6 +38,8 @@ function Login() {
                 navigate('/productcrud');
             } else if(data.role === 1){
                 navigate('/user')
+            } else {
+              setError("Error")
             }
           } catch (err) {
             console.log(err);
@@ -63,6 +65,7 @@ function Login() {
       <Typography component="h1" variant="h5">
         Sign In
       </Typography>
+
 <Box component="form" noValidate sx={{ mt: 3 } } onSubmit={handleSubmitLogin}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -86,6 +89,7 @@ function Login() {
               autoComplete="new-password"
             />
           </Grid>
+        
         </Grid>
         <Button
 
@@ -105,6 +109,7 @@ function Login() {
         </Grid>
       </Box>
     </Box>
+    <p style={{color: "red"}}>{error}</p>
   </Container>
   );
   }
